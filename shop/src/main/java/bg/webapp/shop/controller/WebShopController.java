@@ -28,7 +28,7 @@ public class WebShopController {
     public ModelAndView listProducts(ModelAndView model) {
         List<Product> listProducts = productsService.listAllProducts();
         model.addObject("listProducts", listProducts);
-        model.setViewName("homepage");
+        model.setViewName("home/homepage");
         return model;
     }
 
