@@ -18,6 +18,7 @@ public class OrderItem {
 
     @Column(name="product_quantity")
     private Integer productQuantity;
+    OrderItem(){};
     public OrderItem(Integer orderItemId, Integer orderID, Integer productId, Integer productQuantity) {
         this.orderItemId = orderItemId;
         this.orderID = orderID;

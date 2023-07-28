@@ -56,3 +56,33 @@ INSERT INTO products (product_name,product_desc,product_price) VALUES ("Cucumber
  At present, it is found in the European markets all over the year. Fresh or pickled cucumbers are also available.",4.50),
  ("Tomato","They are usually red, scarlet, or yellow, though green and purple varieties do exist, and they vary in shape from almost spherical to oval and elongate to pear-shaped. Each fruit contains at least two
  cells of small seeds surrounded by jellylike pulp.",5.00);
+
+
+-- UPDATE products
+-- SET product_image =
+--     CASE
+--         WHEN product_name = 'Cucumber' THEN 'cucumber.jpg'
+--         WHEN product_name = 'Tomato' THEN 'tomato.jpg'
+--         WHEN product_name = 'Onion' THEN 'onion.jpg'
+--         WHEN product_name = 'Potato' THEN 'potato.jpg'
+--         WHEN product_name = 'Carrot' THEN 'carrot.jpg'
+--         WHEN product_name = 'Red pepper' THEN 'redpepper.jpg'
+--         WHEN product_name = 'Broccoli' THEN 'broccoli.jpg'
+--         WHEN product_name = 'Mushrooms' THEN 'mushrooms.jpg'
+--         WHEN product_name = 'Beetroot' THEN 'beetroot.jpg'
+--         WHEN product_name = 'Cabbage' THEN 'cabbage.jpg'
+--         WHEN product_name = 'Brinjal' THEN 'brinjal.jpg'
+--     END
+-- WHERE product_name IN ('Cucumber', 'Tomato', 'Onion', 'Potato', 'Carrot', 'Red pepper', 'Broccoli', 'Mushrooms', 'Beetroot', 'Cabbage', 'Brinjal');
+
+
+--UPDATE products
+-- SET product_desc =
+--    CASE
+--        WHEN product_name = 'Cucumber' THEN 'Cucumber is a summer green vegetable, with elongate shape and 15cm long. Its skin is of a green colour, turning into yellow in maturation.
+-- '
+--       WHEN product_name = 'Broccoli' THEN 'Broccoli has large green flower heads, usually dark green, arranged in a tree-like structure branching out from a thick stalk which is usually light green.'
+--        WHEN product_name = 'Cabbage' THEN 'Cabbage is green, leafy vegetable with a round, compact head or "heart" made up of many layers of thick, sturdy leaves that grow in a tightly packed formation.'
+--
+--    END
+--WHERE product_name IN ('Cucumber','Broccoli','Cabbage');

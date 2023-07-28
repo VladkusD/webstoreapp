@@ -4,10 +4,10 @@ import bg.webapp.shop.dao.UserJPARepository;
 import bg.webapp.shop.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 @Service
 public class UserService {
     @Autowired

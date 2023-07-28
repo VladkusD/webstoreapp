@@ -22,6 +22,8 @@ public class Product {
     @Column(name="product_image")
     private String productImage;
 
+    Product (){};
+
     public Product(Integer productId, String productName, String productDesc, Double productPrice, String productImage) {
         this.productId = productId;
         this.productName = productName;

@@ -15,8 +15,8 @@ public class OrderEntity {
 
     @Column(name="status_status")
     private String userStatus;
-
-    public OrderEntity(Integer orderID, Integer userID, String userStatus) {
+    OrderEntity(){};
+    public OrderEntity(Integer orderID, Integer userId, String userStatus) {
         this.orderId = orderID;
         this.userId = userId;
         this.userStatus = userStatus;

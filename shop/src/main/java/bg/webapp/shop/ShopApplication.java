@@ -24,13 +24,13 @@
 //	}
 //}
 package bg.webapp.shop;
-import bg.webapp.shop.config.mvc.MvcConfig;
+//import bg.webapp.shop.config.mvc.MvcConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(MvcConfig.class)
+//@Import(MvcConfig.class)
 public class ShopApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ShopApplication.class, args);
