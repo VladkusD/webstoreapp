@@ -57,17 +57,19 @@
                     <h5 class="card-title" th:text="${product.productName}"></h5>
                     <p class="card-text">Price: $<span th:text="${product.productPrice}"></span></p>
                     <p class="card-text">Description: <span th:text="${product.productDesc}"></span></p>
-                    <div class="form-group mb-3">
-                        <label for="productQuantity">Quantity</label>
-                        <input type="number" class="form-control" id="productQuantity" name="productQuantity" value="1" oninput="restrictMinValue(this)">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                    <form th:action="@{'/addProductToCart/' + ${product.productId}}" method="post">
+                        <div class="form-group mb-3">
+                            <label for="productQuantity">Quantity</label>
+                            <input type="number" class="form-control" id="productQuantity" name="orderItemQuantity" value="1" oninput="restrictMinValue(this)">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add to cart</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>
 <script>

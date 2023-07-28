@@ -1,5 +1,6 @@
 package bg.webapp.shop.controller;
 
+import bg.webapp.shop.model.OrderItem;
 import bg.webapp.shop.model.Product;
 import bg.webapp.shop.service.OrderItemService;
 import bg.webapp.shop.service.OrderService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.*;
 import java.security.Principal;
@@ -58,18 +60,25 @@ public class WebShopController {
         return buffer.toByteArray();
     }
 
-    @RequestMapping(value = "/addProductToCart", method = RequestMethod.GET)
-    public ModelAndView addContactToShoppingCart(HttpServletRequest request, ModelAndView model) {
-        int productId = Integer.parseInt(request.getParameter("product_id"));
+    @RequestMapping(value = "/addProductToCart/{productId}", method = RequestMethod.POST)
+    public ModelAndView addProductToCart(@PathVariable Integer productId,
+                                         @RequestParam("orderItemQuantity") Integer orderItemQuantity,
+                                         ModelAndView model) {
         Product product = productsService.findById(productId);
-        List<Product> productList = productsService.findAll();
-        model.addObject("productList", productList);
-        model.setViewName("homepage");
-        orderService.getCart().put(product, orderService.getCart().getOrDefault(product, 0) + 1);
+        System.out.println(orderItemQuantity);
+// no need to add when using REDIRECT !!!!!!
+//        List<Product> listProducts = productsService.listAllProducts();
+//        model.addObject("listProducts", listProducts);
+        OrderItem orderItem = new OrderItem(product,orderItemQuantity);
+
+        // Now you have the productId and orderItemQuantity, and you can process adding to the cart as needed.
+        orderService.getCart().put(orderItem, orderItemQuantity);
         model.addObject("cart", orderService.getCart());
+        model.setViewName("redirect:/");
 
         return model;
     }
+
 
 
 

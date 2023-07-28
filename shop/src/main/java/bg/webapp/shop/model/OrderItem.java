@@ -25,6 +25,11 @@ public class OrderItem {
         this.productId = productId;
         this.productQuantity = productQuantity;
     }
+    public OrderItem(Product product,Integer productQuantity) {
+        this.orderID = orderID;
+        this.productId = product.getProductId();
+        this.productQuantity = productQuantity;
+    }
     public Integer getOrderItemId() {
         return orderItemId;
     }
