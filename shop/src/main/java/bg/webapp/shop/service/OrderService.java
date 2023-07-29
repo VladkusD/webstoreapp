@@ -28,13 +28,5 @@ public class OrderService {
     public List<OrderEntity> listOrdersByUser(Integer userId){
         return orderRepo.findByUserId(userId);
     }
-    private Map<OrderItem, Integer> cart = new HashMap<>();
 
-    public Map<OrderItem, Integer> getCart() {
-        return cart;
-    }
-
-    public void setCart(Map<OrderItem, Integer> cart) {
-        this.cart = cart;
-    }
 }

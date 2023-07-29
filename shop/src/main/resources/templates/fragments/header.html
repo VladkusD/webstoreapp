@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="header">
+    <nav class="navbar navbar-light bg-light navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand">
+                <img src="/logo.jpg" alt="X No Image X" height="150">
+                <a class="navbar-brand">FRUIT AND VEGGIE SHOP</a>
+            </a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cart}">
+                        <span th:text="${cart != null ? 'Cart ' + #maps.size(cart) : 'Cart'}"></span>
+                    </a>
+                </li>
+            </ul>
+            <form th:action="@{/find}" th:method="post"
+                  class="form-inline my-2 my-lg-0 align-right d-flex align-items-center">
+                <input class="form-control mr-sm-2" type="search" name="condition" placeholder="Search"
+                       aria-label="Search" th:value="${condition}">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+        </div>
+    </nav>
+</div>
+</body>
+</html>

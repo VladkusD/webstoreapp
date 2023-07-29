@@ -18,7 +18,42 @@ public class OrderItem {
 
     @Column(name="product_quantity")
     private Integer productQuantity;
-    OrderItem(){};
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductDesc() {
+        return productDesc;
+    }
+
+    public void setProductDesc(String productDesc) {
+        this.productDesc = productDesc;
+    }
+
+    public Double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(Double productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    @Transient
+    private String productName;
+
+    @Transient
+    private String productDesc;
+
+    @Transient
+    private Double productPrice;
+
+
+    public OrderItem(){};
     public OrderItem(Integer orderItemId, Integer orderID, Integer productId, Integer productQuantity) {
         this.orderItemId = orderItemId;
         this.orderID = orderID;
@@ -26,7 +61,6 @@ public class OrderItem {
         this.productQuantity = productQuantity;
     }
     public OrderItem(Product product,Integer productQuantity) {
-        this.orderID = orderID;
         this.productId = product.getProductId();
         this.productQuantity = productQuantity;
     }
