@@ -16,7 +16,7 @@ public class OrderItemService {
     @Autowired
     OrderItemJPARepository orderItemRepo;
 
-    public void insertItemOrUpdate(OrderItem item){
+    public void createItem(OrderItem item){
         orderItemRepo.save(item);
     }
     public void deleteItem(OrderItem item){

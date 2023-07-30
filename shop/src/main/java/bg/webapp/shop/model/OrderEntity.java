@@ -13,13 +13,13 @@ public class OrderEntity {
     @Column(name="user_id")
     private Integer userId;
 
-    @Column(name="status_status")
-    private String userStatus;
-    OrderEntity(){};
-    public OrderEntity(Integer orderID, Integer userId, String userStatus) {
+    @Column(name="order_status")
+    private String orderStatus;
+    public OrderEntity(){};
+    public OrderEntity(Integer orderID, Integer userId, String orderStatus) {
         this.orderId = orderID;
         this.userId = userId;
-        this.userStatus = userStatus;
+        this.orderStatus = orderStatus;
     }
 
     public Integer getOrderID() {
@@ -38,11 +38,11 @@ public class OrderEntity {
         this.userId = userID;
     }
 
-    public String getUserStatus() {
-        return userStatus;
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setUserStatus(String userStatus) {
-        this.userStatus = userStatus;
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

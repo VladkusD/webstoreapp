@@ -1,18 +1,21 @@
 package bg.webapp.shop.controller;
 
+import bg.webapp.shop.model.OrderEntity;
 import bg.webapp.shop.model.OrderItem;
 import bg.webapp.shop.model.Product;
-import bg.webapp.shop.service.OrderItemService;
-import bg.webapp.shop.service.ProductsService;
-import bg.webapp.shop.service.UserService;
+import bg.webapp.shop.model.User;
+import bg.webapp.shop.service.*;
+import jakarta.persistence.criteria.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebShopController {
@@ -24,12 +27,19 @@ public class WebShopController {
 
     @Autowired
     OrderItemService orderItemService;
+    @Autowired
+    OrderService orderService;
+
 
     @RequestMapping(value = "/")
     public ModelAndView listProducts(ModelAndView model) {
         List<Product> listProducts = productsService.listAllProducts();
         model.addObject("listProducts", listProducts);
         model.setViewName("homepage");
+        if (orderItemService.getCart().size()>0){
+            model.addObject("cart", orderItemService.getCart());
+        }
+
         return model;
     }
 
@@ -64,12 +74,15 @@ public class WebShopController {
         Product product = productsService.findById(productId);
 //  System.out.println(orderItemQuantity);
 // no need to add when using REDIRECT !!!!!!
-//        List<Product> listProducts = productsService.listAllProducts();
-//        model.addObject("listProducts", listProducts);
+        //  return "redirect:/cart";
+        List<Product> listProducts = productsService.listAllProducts();
+        model.addObject("listProducts", listProducts);
         OrderItem orderItem = new OrderItem(product, orderItemQuantity);
+
         orderItem.setProductName(product.getProductName());
         orderItem.setProductDesc(product.getProductDesc());
         orderItem.setProductPrice(product.getProductPrice());
+        NotificationAlert notificationAlert = new NotificationAlert("Product: "+ orderItem.getProductName() +" successfully added to cart!");
         Map<OrderItem, Integer> cart = orderItemService.getCart();
         boolean itemFound = false;
         for (OrderItem item : cart.keySet()) {
@@ -84,7 +97,8 @@ public class WebShopController {
             cart.put(orderItem, orderItemQuantity);
         }
         model.addObject("cart", orderItemService.getCart());
-        model.setViewName("redirect:/");
+        model.addObject("notification",notificationAlert);
+        model.setViewName("homepage");
 
         return model;
     }
@@ -132,9 +146,77 @@ public class WebShopController {
         model.addObject("cart", orderItemService.getCart());
         model.addObject("totalSum", formattedTotalSum);
         model.setViewName("cart");
-        //emailService.sendSimpleMail();
         return model;
     }
 
+    @RequestMapping(value = "/checkout")
+    public ModelAndView checkout(ModelAndView model) {
+
+
+        model.setViewName("checkout");
+        //emailService.sendSimpleMail();
+        return model;
+    }
+    // @RequestParam quantity <- moga da prihvana quantity kato requestparam ako go definiram
+    // v href-a s (,quantity=${instance.value})
+    @RequestMapping(value="/completeOrder" , method= RequestMethod.POST)
+    public ModelAndView completeOrder(@RequestParam("email") String email,
+                                      @RequestParam("name") String name,
+                                      @RequestParam("userAddress") String userAddress,
+                                      @RequestParam("phoneNumber") String phoneNumber,
+                                      ModelAndView model){
+        String[] nameSplit = name.split("\\s+");
+        User user = new User();
+        user.setUserFirstName(nameSplit[0]);
+        user.setUserLastName(nameSplit[1]);
+        user.setUserEmail(email);
+        user.setUserAddress(userAddress);
+        user.setUserPhone(phoneNumber);
+        user.setUserStatus(0);
+        user.setUserPassword("blqblqblq");
+        userService.createUser(user);
+
+        OrderEntity order = new OrderEntity();
+        order.setOrderStatus("Pending");
+        order.setUserID(user.getUserId());
+
+
+        orderService.createOrder(order);
+        Map<OrderItem, Integer> cart = orderItemService.getCart();
+        for (OrderItem item : cart.keySet()){
+            item.setOrderID(order.getOrderID());
+            orderItemService.createItem(item);
+        }
+        cart.clear();
+        model.setViewName("homepage");
+        return model;
+    }
+//    @RequestMapping(value="/completeOrder" , method= RequestMethod.POST)
+//    public ModelAndView completeOrder(ModelAndView model){
+//
+//        User user = new User();
+//        user.setUserFirstName("ivan");
+//        user.setUserLastName("ivanov");
+//        user.setUserEmail("ivanko@mail.bg");
+//        user.setUserPhone("123123124324234");
+//        userService.createUser(user);
+//
+//        OrderEntity order = new OrderEntity();
+//        order.setOrderStatus("Pending");
+//        order.setUserID(user.getUserId());
+//
+//        orderService.createOrder(order);
+//        Map<OrderItem, Integer> cart = orderItemService.getCart();
+//        for (OrderItem item : cart.keySet()){
+//            orderItemService.createItem(item);
+//        }
+//
+//        cart.clear();
+//        List<Product> listProducts = productsService.listAllProducts();
+//        model.addObject("listProducts", listProducts);
+//
+//        model.setViewName("homepage");
+//        return model;
+//    }
 
 }

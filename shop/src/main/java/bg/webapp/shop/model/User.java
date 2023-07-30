@@ -32,9 +32,9 @@ public class User implements Serializable {
 
     @Column(name="user_password")
     private String userPassword;
-    User(){};
-    public User(Integer userId, String userFirstName, String userLastName, String userPhone, String userEmail, String userAddress, Integer userStatus, String userPassword) {
-        this.userId = userId;
+    public User(){};
+    public User(String userFirstName, String userLastName, String userPhone, String userEmail, String userAddress, Integer userStatus, String userPassword) {
+
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
         this.userPhone = userPhone;

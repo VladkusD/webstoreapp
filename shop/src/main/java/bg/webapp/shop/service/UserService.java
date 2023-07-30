@@ -26,4 +26,8 @@ public class UserService {
         userRepo.delete(user);
     }
 
+//    public String generatePassword(){
+//        return
+//    }
+
 }
