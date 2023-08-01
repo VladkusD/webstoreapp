@@ -6,6 +6,7 @@ import bg.webapp.shop.model.Product;
 import bg.webapp.shop.model.User;
 import bg.webapp.shop.service.*;
 import jakarta.persistence.criteria.Order;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -51,10 +52,11 @@ public class WebShopController {
         model.setViewName("homepage");
         return model;
     }
-
+// -------------------------------- Sus @PathVariable
     @RequestMapping(value = "/images/{productImage}", method = RequestMethod.GET)
     public @ResponseBody byte[] getImage(@PathVariable String productImage) throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream("D:\\java_projects\\springprojects\\webstoreapp\\images\\" + productImage));
+        InputStream in = new BufferedInputStream(new FileInputStream("D:\\java_projects\\" +
+                "springprojects\\webstoreapp\\images\\" + productImage));
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         int nRead;
@@ -66,6 +68,27 @@ public class WebShopController {
 
         return buffer.toByteArray();
     }
+
+
+//    ----------------------------- SUS HTTPServletRequest
+//    --------------------- int contactId = Integer.parseInt(request.getParameter("id")); <-Za RequestParam
+//    @RequestMapping(value = "/images/{productImage}", method = RequestMethod.GET)
+
+//    public @ResponseBody byte[] getImage(HttpServletRequest request) throws IOException {
+//        InputStream in = new BufferedInputStream(new FileInputStream("D:\\java_projects\\" +
+//                "springprojects\\webstoreapp\\"+request.getRequestURI()));
+//
+//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//
+//        int nRead;
+//        byte[] data = new byte[16384];
+//
+//        while ((nRead = in.read(data, 0, data.length)) != -1) {
+//            buffer.write(data, 0, nRead);
+//        }
+//
+//        return buffer.toByteArray();
+//    }
 
     @RequestMapping(value = "/addProductToCart/{productId}", method = RequestMethod.POST)
     public ModelAndView addProductToCart(@PathVariable Integer productId,
@@ -82,7 +105,8 @@ public class WebShopController {
         orderItem.setProductName(product.getProductName());
         orderItem.setProductDesc(product.getProductDesc());
         orderItem.setProductPrice(product.getProductPrice());
-        NotificationAlert notificationAlert = new NotificationAlert("Product: "+ orderItem.getProductName() +" successfully added to cart!");
+        NotificationAlert notificationAlert = new NotificationAlert("Product: "+ orderItem.getProductName()
+                +" successfully added to cart!");
         Map<OrderItem, Integer> cart = orderItemService.getCart();
         boolean itemFound = false;
         for (OrderItem item : cart.keySet()) {
@@ -191,6 +215,12 @@ public class WebShopController {
         model.setViewName("homepage");
         return model;
     }
+
+//    @GetMapping ("/unauthorized")
+//    @ResponseBody
+//    public String unauthorized (){
+//        return "no access";
+//    }
 //    @RequestMapping(value="/completeOrder" , method= RequestMethod.POST)
 //    public ModelAndView completeOrder(ModelAndView model){
 //

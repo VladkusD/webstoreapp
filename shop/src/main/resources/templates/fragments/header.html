@@ -27,14 +27,28 @@
                 </li>
             </ul>
             <form th:action="@{/find}" th:method="post"
-                  class="form-inline my-2 my-lg-0 align-left d-flex align-items-center">
+                  class="form-inline my-2 my-lg-0 align-centre d-flex align-items-center">
                 <input class="form-control mr-sm-2" type="search" name="condition" placeholder="Search"
                        aria-label="Search" th:value="${condition}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
-
+            <div>
+                <h3>
+                    <!--                    Welcome : <span th:text="${principal.name}"/> |-->
+                    Welcome , quest
+                    <a th:href="@{/logout}"> Login</a>
+                </h3>
+            </div>
+            <div>
+                <!--            <div th:if="${principal.name != null}">-->
+                <h3>
+                    <!--                    Welcome : <span th:text="${principal.name}"/> |-->
+                    <a th:href="@{/logout}"> Logout</a>
+                </h3>
+            </div>
         </div>
     </nav>
+
 </div>
 </body>
 </html>
