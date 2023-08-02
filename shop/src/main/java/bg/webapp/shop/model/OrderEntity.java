@@ -1,6 +1,8 @@
 package bg.webapp.shop.model;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name="web_order")

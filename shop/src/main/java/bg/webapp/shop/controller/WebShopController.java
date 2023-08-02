@@ -5,8 +5,6 @@ import bg.webapp.shop.model.OrderItem;
 import bg.webapp.shop.model.Product;
 import bg.webapp.shop.model.User;
 import bg.webapp.shop.service.*;
-import jakarta.persistence.criteria.Order;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -159,7 +157,7 @@ public class WebShopController {
         return "redirect:/cart";
     }
 
-    @RequestMapping(value = "/cart")
+    @RequestMapping(value = "/cart" , method=RequestMethod.GET)
     public ModelAndView showCart(ModelAndView model) {
         Map<OrderItem, Integer> cart = orderItemService.getCart();
 
@@ -197,7 +195,7 @@ public class WebShopController {
         user.setUserAddress(userAddress);
         user.setUserPhone(phoneNumber);
         user.setUserStatus(0);
-        user.setUserPassword("blqblqblq");
+        user.setUserPassword("admin");
         userService.createUser(user);
 
         OrderEntity order = new OrderEntity();
@@ -213,6 +211,12 @@ public class WebShopController {
         }
         cart.clear();
         model.setViewName("homepage");
+        return model;
+    }
+
+    @RequestMapping(value = "/login")
+    public ModelAndView login(ModelAndView model) {
+        model.setViewName("login");
         return model;
     }
 

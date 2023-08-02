@@ -1,14 +1,15 @@
 package bg.webapp.shop.model;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name="user")
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="user_id")
     private Integer userId;
 
