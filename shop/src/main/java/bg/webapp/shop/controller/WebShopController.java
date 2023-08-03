@@ -10,11 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
-import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class WebShopController {
@@ -194,7 +191,7 @@ public class WebShopController {
         user.setUserEmail(email);
         user.setUserAddress(userAddress);
         user.setUserPhone(phoneNumber);
-        user.setUserStatus(0);
+        user.setUserRight(0);
         user.setUserPassword("admin");
         userService.createUser(user);
 
@@ -210,6 +207,8 @@ public class WebShopController {
             orderItemService.createItem(item);
         }
         cart.clear();
+        List<Product> listProducts = productsService.listAllProducts();
+        model.addObject("listProducts", listProducts);
         model.setViewName("homepage");
         return model;
     }

@@ -28,20 +28,20 @@ public class User implements Serializable {
     @Column(name="user_address")
     private String userAddress;
 
-    @Column(name="user_status")
-    private Integer userStatus;
+    @Column(name="user_right")
+    private Integer userRight;
 
     @Column(name="user_password")
     private String userPassword;
     public User(){};
-    public User(String userFirstName, String userLastName, String userPhone, String userEmail, String userAddress, Integer userStatus, String userPassword) {
+    public User(String userFirstName, String userLastName, String userPhone, String userEmail, String userAddress, Integer userRight, String userPassword) {
 
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
         this.userPhone = userPhone;
         this.userEmail = userEmail;
         this.userAddress = userAddress;
-        this.userStatus = userStatus;
+        this.userRight = userRight;
         this.userPassword = userPassword;
     }
 
@@ -93,12 +93,12 @@ public class User implements Serializable {
         this.userAddress = userAddress;
     }
 
-    public Integer getUserStatus() {
-        return userStatus;
+    public Integer getUserRight() {
+        return userRight;
     }
 
-    public void setUserStatus(Integer userStatus) {
-        this.userStatus = userStatus;
+    public void setUserRight(Integer userRight) {
+        this.userRight = userRight;
     }
 
     public String getUserPassword() {
