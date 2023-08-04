@@ -2,7 +2,9 @@ package bg.webapp.shop.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -12,8 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
-
 @EnableWebSecurity
+@Configuration
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     DataSource dataSource;
@@ -21,16 +25,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth
-            .inMemoryAuthentication()
-                .withUser("aaa").password("{noop}aaa").roles("admin");
+//        auth
+//            .inMemoryAuthentication()
+//                .withUser("aaa").password("{noop}aaa").roles("0");
 
 
-//
-//        auth.jdbcAuthentication().dataSource(dataSource)
-//
-//                .usersByUsernameQuery("SELECT user_email, user_password, true FROM user WHERE user_email=?")
-//                .authoritiesByUsernameQuery("SELECT user_id, system_role FROM user_right WHERE user_id=?");
+
+        auth.jdbcAuthentication().dataSource(dataSource)
+
+                .usersByUsernameQuery("SELECT user_first_name, user_password, true FROM user WHERE user_first_name=?")
+                .authoritiesByUsernameQuery("SELECT ur.user_id, ur.system_role FROM user_right ur INNER JOIN user u ON ur.user_id WHERE u.user_first_name=?");
 //            .usersByUsernameQuery("SELECT user_first_name, user_password, true FROM user WHERE user_first_name=?")
 //             .authoritiesByUsernameQuery("SELECT user_id,system_role FROM user_right WHERE user_id=?");
 
@@ -55,7 +59,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .permitAll(true)
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID")
+//                .logoutSuccessUrl("/login?logout").deleteCookies("JSESSIONID")
+                .logoutSuccessUrl("/").deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .and()
                 .rememberMe()
@@ -85,10 +90,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256");
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256");
+    }
 }
 
 
@@ -183,7 +188,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //
 //
 //}
-
+//auth.jdbcAuthentication()
+//        .dataSource(userRepo)
+//        .usersByUsernameQuery("SELECT User_Name, Password, true FROM user WHERE User_Name=?")
+//        .authoritiesByUsernameQuery("SELECT UserName, GroupName FROM user_rights_view WHERE UserName=?");
 //
 //        auth.jdbcAuthentication().dataSource(userRepo)
 //                .usersByUsernameQuery("SELECT User_Name, Password, true FROM user WHERE User_Name=?")

@@ -16,6 +16,9 @@ import java.util.Map;
 @Service
 @SessionScope
 public class OrderService {
+
+    @Autowired
+    EmailService emailService;
     @Autowired
     OrderJPARepository orderRepo;
 

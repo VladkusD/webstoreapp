@@ -90,4 +90,8 @@ public class OrderItem {
     public void setProductQuantity(Integer productQuantity) {
         this.productQuantity = productQuantity;
     }
+    @Override
+    public String toString(){
+        return getProductName();
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +27,15 @@ public class WebShopController {
     @Autowired
     OrderService orderService;
 
+    @Autowired
+    EmailService emailService;
+
 
     @RequestMapping(value = "/")
-    public ModelAndView listProducts(ModelAndView model) {
+    public ModelAndView listProducts(ModelAndView model, Principal principal) {
         List<Product> listProducts = productsService.listAllProducts();
         model.addObject("listProducts", listProducts);
+        model.addObject("principal",principal);
         model.setViewName("homepage");
         if (orderItemService.getCart().size()>0){
             model.addObject("cart", orderItemService.getCart());
@@ -40,10 +45,11 @@ public class WebShopController {
     }
 
     @RequestMapping(value = "/find", method = RequestMethod.POST)
-    public ModelAndView findContacts(@RequestParam("condition") String condition, ModelAndView model) {
+    public ModelAndView findContacts(@RequestParam("condition") String condition, ModelAndView model,Principal principal) {
         List<Product> listProducts = productsService.findBySearchTerm(condition, condition);
         model.addObject("listProducts", listProducts);
         model.addObject("condition", condition);
+        model.addObject("principal",principal);
         model.setViewName("homepage");
         return model;
     }
@@ -88,7 +94,7 @@ public class WebShopController {
     @RequestMapping(value = "/addProductToCart/{productId}", method = RequestMethod.POST)
     public ModelAndView addProductToCart(@PathVariable Integer productId,
                                          @RequestParam("orderItemQuantity") Integer orderItemQuantity,
-                                         ModelAndView model) {
+                                         ModelAndView model,Principal principal) {
         Product product = productsService.findById(productId);
 //  System.out.println(orderItemQuantity);
 // no need to add when using REDIRECT !!!!!!
@@ -117,6 +123,7 @@ public class WebShopController {
         }
         model.addObject("cart", orderItemService.getCart());
         model.addObject("notification",notificationAlert);
+        model.addObject("principal",principal);
         model.setViewName("homepage");
 
         return model;
@@ -155,7 +162,7 @@ public class WebShopController {
     }
 
     @RequestMapping(value = "/cart" , method=RequestMethod.GET)
-    public ModelAndView showCart(ModelAndView model) {
+    public ModelAndView showCart(ModelAndView model, Principal principal) {
         Map<OrderItem, Integer> cart = orderItemService.getCart();
 
         double totalSum = cart.entrySet().stream()
@@ -164,14 +171,15 @@ public class WebShopController {
         String formattedTotalSum = String.format("%.2f", totalSum);
         model.addObject("cart", orderItemService.getCart());
         model.addObject("totalSum", formattedTotalSum);
+        model.addObject("principal",principal);
         model.setViewName("cart");
         return model;
     }
 
     @RequestMapping(value = "/checkout")
-    public ModelAndView checkout(ModelAndView model) {
+    public ModelAndView checkout(ModelAndView model,Principal principal) {
 
-
+        model.addObject("principal",principal);
         model.setViewName("checkout");
         //emailService.sendSimpleMail();
         return model;
@@ -183,7 +191,7 @@ public class WebShopController {
                                       @RequestParam("name") String name,
                                       @RequestParam("userAddress") String userAddress,
                                       @RequestParam("phoneNumber") String phoneNumber,
-                                      ModelAndView model){
+                                      ModelAndView model,Principal principal){
         String[] nameSplit = name.split("\\s+");
         User user = new User();
         user.setUserFirstName(nameSplit[0]);
@@ -201,14 +209,20 @@ public class WebShopController {
 
 
         orderService.createOrder(order);
+        StringBuilder orderedItems = new StringBuilder();
+        Integer orderQuantity;
         Map<OrderItem, Integer> cart = orderItemService.getCart();
         for (OrderItem item : cart.keySet()){
             item.setOrderID(order.getOrderID());
             orderItemService.createItem(item);
+            orderQuantity = item.getProductQuantity();
+            orderedItems.append("\n"+item.toString()+": "+orderQuantity);
         }
+        emailService.sendSimpleMail(user.getUserEmail(),orderedItems);
         cart.clear();
         List<Product> listProducts = productsService.listAllProducts();
         model.addObject("listProducts", listProducts);
+        model.addObject("principal",principal);
         model.setViewName("homepage");
         return model;
     }
@@ -218,38 +232,5 @@ public class WebShopController {
         model.setViewName("login");
         return model;
     }
-
-//    @GetMapping ("/unauthorized")
-//    @ResponseBody
-//    public String unauthorized (){
-//        return "no access";
-//    }
-//    @RequestMapping(value="/completeOrder" , method= RequestMethod.POST)
-//    public ModelAndView completeOrder(ModelAndView model){
-//
-//        User user = new User();
-//        user.setUserFirstName("ivan");
-//        user.setUserLastName("ivanov");
-//        user.setUserEmail("ivanko@mail.bg");
-//        user.setUserPhone("123123124324234");
-//        userService.createUser(user);
-//
-//        OrderEntity order = new OrderEntity();
-//        order.setOrderStatus("Pending");
-//        order.setUserID(user.getUserId());
-//
-//        orderService.createOrder(order);
-//        Map<OrderItem, Integer> cart = orderItemService.getCart();
-//        for (OrderItem item : cart.keySet()){
-//            orderItemService.createItem(item);
-//        }
-//
-//        cart.clear();
-//        List<Product> listProducts = productsService.listAllProducts();
-//        model.addObject("listProducts", listProducts);
-//
-//        model.setViewName("homepage");
-//        return model;
-//    }
 
 }

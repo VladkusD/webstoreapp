@@ -34,36 +34,21 @@
             </form>
             <div th:fragment="header">
                 <nav class="navbar navbar-light bg-light navbar-expand-lg">
-                    <!-- ... Your existing code ... -->
-                    <div>
-                        <h3 th:unless="${#authorization.expression('isAuthenticated()')}">
-                            Welcome, guest
-                            <a th:href="@{/login}">Login</a>
-                        </h3>
-                        <h3 th:if="${#authorization.expression('isAuthenticated()')}">
-                            Welcome, <span th:text="${#authentication.principal.username}"/> |
-                            <a th:href="@{/logout}">Logout</a>
-                        </h3>
+                    <div th:if="${principal == null}">
+                        <h2>
+                            Welcome guest |
+                            <a th:href="@{/login}"> Login</a>
+                        </h2>
+                    </div>
+                    <div th:if="${principal != null}">
+                        <h2>
+                            Welcome : <span th:text="${principal.name}"/> |
+                            <a th:href="@{/logout}"> Logout</a>
+                        </h2>
                     </div>
                 </nav>
             </div>
-<!--            <div>-->
-<!--                <h3>-->
-<!--                    &lt;!&ndash;                    Welcome : <span th:text="${principal.name}"/> |&ndash;&gt;-->
-<!--                    Welcome , quest-->
-<!--                    <a th:href="@{/login}"> Login</a>-->
-<!--                </h3>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                &lt;!&ndash;            <div th:if="${principal.name != null}">&ndash;&gt;-->
-<!--                <h3>-->
-<!--                    &lt;!&ndash;                    Welcome : <span th:text="${principal.name}"/> |&ndash;&gt;-->
-<!--                    <a th:href="@{/logout}"> Logout</a>-->
-<!--                </h3>-->
-<!--            </div>-->
-        </div>
-    </nav>
-
+            <div>
 </div>
 </body>
 </html>

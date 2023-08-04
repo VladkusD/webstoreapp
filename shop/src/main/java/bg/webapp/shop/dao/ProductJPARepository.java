@@ -14,8 +14,6 @@ public interface ProductJPARepository extends JpaRepository<Product,Integer> {
 
     @Query("SELECT p FROM Product p WHERE p.productName LIKE %:productName% OR p.productDesc LIKE %:productDesc%")
     List<Product> findBySearchTerm(@Param("productName") String productName,@Param("productDesc") String productDesc);
-
-
     //List<Product> findByProductName(String productName);
     List<Product> findAll();
 
