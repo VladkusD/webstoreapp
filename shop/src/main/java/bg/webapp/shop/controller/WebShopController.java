@@ -47,7 +47,6 @@ public class WebShopController {
         if (orderItemService.getCart().size()>0){
             model.addObject("cart", orderItemService.getCart());
         }
-
         return model;
     }
 
@@ -257,11 +256,24 @@ public class WebShopController {
         return model;
     }
 
-//    @RequestMapping(value = "/orderhistory")
-//    public ModelAndView orderHistory(ModelAndView model,Principal principal){
-//        List<OrderItem> history = orderItemService.getHistory(36);
-//        model.addObject("orderhistory",history);
-//        return model;
-//    }
+    @RequestMapping(value = "/orderhistory")
+    public ModelAndView orderHistory(ModelAndView model,Principal principal){
+        List<OrderItem> history = orderItemService.getHistory("36");
+//        OrderItem itemz = new OrderItem();
+//        itemz.setProductName("TEEESSSTTTT");
+//        history.add(5, itemz);
+        for (OrderItem orderItem : history) {
+            System.out.println(orderItem.getProductId());
+            System.out.println(orderItem.getOrderItemId());
+            System.out.println(orderItem.getProductQuantity());
+            System.out.println(orderItem.getProductPrice());
+            System.out.println(orderItem.getProductName());
+            System.out.println(orderItem.getProductDesc());
+           // orderItem.setProductDesc(product.getProductDesc());
+        }
+        model.addObject("orderhistory",history);
+        model.setViewName("orderhistory");
+        return model;
+    }
 
 }

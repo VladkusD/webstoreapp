@@ -34,10 +34,9 @@ public class OrderItemService {
         this.cart = cart;
     }
 
-//    public List<OrderItem> getHistory(Integer userId){
-//        List<OrderItem> orderItems = orderItemRepo.orderHistory(userId);
-//        return orderItems;
-//    }
+    public List<OrderItem> getHistory(String userId){
+        return orderItemRepo.orderHistory(userId);
+    }
 
 
 }

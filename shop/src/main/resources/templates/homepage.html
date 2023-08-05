@@ -29,6 +29,11 @@
         </div>
     </div>
     <h1>Product List</h1>
+    <div th:if="${principal != null}">
+        <h2>
+            <a th:href="@{/orderhistory}"> Order History</a>
+        </h2>
+    </div>
     <div class="row justify-content-center">
             <div class="col-md-4" th:each="product : ${listProducts}">
                 <div class="card mb-4" style="width: 18rem;">
