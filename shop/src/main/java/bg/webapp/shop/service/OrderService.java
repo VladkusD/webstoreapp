@@ -18,12 +18,7 @@ import java.util.Map;
 public class OrderService {
 
     @Autowired
-    EmailService emailService;
-    @Autowired
     OrderJPARepository orderRepo;
-
-    @Autowired
-    ProductJPARepository productRepo;
 
     public void createOrder(OrderEntity orderEntity){
         orderRepo.save(orderEntity);

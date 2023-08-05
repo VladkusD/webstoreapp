@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,6 +33,11 @@ public class OrderItemService {
     public void setCart(Map<OrderItem, Integer> cart) {
         this.cart = cart;
     }
+
+//    public List<OrderItem> getHistory(Integer userId){
+//        List<OrderItem> orderItems = orderItemRepo.orderHistory(userId);
+//        return orderItems;
+//    }
 
 
 }

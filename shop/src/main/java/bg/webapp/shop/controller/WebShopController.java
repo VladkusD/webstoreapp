@@ -6,6 +6,8 @@ import bg.webapp.shop.model.Product;
 import bg.webapp.shop.model.User;
 import bg.webapp.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,19 +32,39 @@ public class WebShopController {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
 
     @RequestMapping(value = "/")
     public ModelAndView listProducts(ModelAndView model, Principal principal) {
-        List<Product> listProducts = productsService.listAllProducts();
-        model.addObject("listProducts", listProducts);
+//        List<Product> listProducts = productsService.listAllProducts();
+//        model.addObject("listProducts", listProducts);
+        findPaginated(1,model,principal);
         model.addObject("principal",principal);
-        model.setViewName("homepage");
+        //model.setViewName("homepage"); <- pre4i na paginationa ako se dobavq tuk
+        // kade da turq tozi metod za koli4kata ....
         if (orderItemService.getCart().size()>0){
             model.addObject("cart", orderItemService.getCart());
         }
 
         return model;
     }
+
+    @GetMapping(value = "/page/{pageNo}")
+    public ModelAndView findPaginated(@PathVariable (value = "pageNo") int pageNo,
+                                      ModelAndView model,Principal principal){
+        int pageSize = 6;
+        Page<Product> page = productsService.findPaginated(pageNo,pageSize);
+        List<Product>  listProducts = page.getContent();
+        model.addObject("currentPage", pageNo);
+        model.addObject("totalPages", page.getTotalPages());
+        model.addObject("totalItems", page.getTotalElements());
+        model.addObject("listProducts", listProducts);
+        model.addObject("principal",principal);
+        model.setViewName("homepage");
+        return model;
+    };
 
     @RequestMapping(value = "/find", method = RequestMethod.POST)
     public ModelAndView findContacts(@RequestParam("condition") String condition, ModelAndView model,Principal principal) {
@@ -200,7 +222,8 @@ public class WebShopController {
         user.setUserAddress(userAddress);
         user.setUserPhone(phoneNumber);
         user.setUserRight(0);
-        user.setUserPassword("admin");
+        String randomPassword = PasswordGenerator.generatePassword();
+        user.setUserPassword(passwordEncoder.encode(randomPassword));
         userService.createUser(user);
 
         OrderEntity order = new OrderEntity();
@@ -218,6 +241,7 @@ public class WebShopController {
             orderQuantity = item.getProductQuantity();
             orderedItems.append("\n"+item.toString()+": "+orderQuantity);
         }
+        orderedItems.append("\n Your password is : "+randomPassword);
         emailService.sendSimpleMail(user.getUserEmail(),orderedItems);
         cart.clear();
         List<Product> listProducts = productsService.listAllProducts();
@@ -232,5 +256,12 @@ public class WebShopController {
         model.setViewName("login");
         return model;
     }
+
+//    @RequestMapping(value = "/orderhistory")
+//    public ModelAndView orderHistory(ModelAndView model,Principal principal){
+//        List<OrderItem> history = orderItemService.getHistory(36);
+//        model.addObject("orderhistory",history);
+//        return model;
+//    }
 
 }

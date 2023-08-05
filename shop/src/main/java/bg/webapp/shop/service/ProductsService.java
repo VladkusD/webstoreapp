@@ -4,6 +4,9 @@ import bg.webapp.shop.dao.ProductJPARepository;
 import bg.webapp.shop.model.Product;
 //import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +54,9 @@ public class ProductsService {
 
     public List<Product> searchProduct(String productName, String productDesc) {
         return productRepo.findByProductNameContainingOrProductDescContaining(productName, productDesc);
+    }
+    public Page<Product> findPaginated(int pageNo, int pageSize){
+        Pageable pageable = PageRequest.of(pageNo -1, pageSize);
+        return this.productRepo.findAll(pageable);
     }
 }
