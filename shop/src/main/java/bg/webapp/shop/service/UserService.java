@@ -33,6 +33,10 @@ public class UserService {
         userRepo.findUserByEmail(email);
     }
 
+    public User getUserByFirstName(String name){
+        return userRepo.findUserByFirstName(name);
+    }
+
 
 //    public String generatePassword(){
 //        return
