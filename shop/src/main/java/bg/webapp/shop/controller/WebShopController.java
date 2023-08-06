@@ -1,9 +1,6 @@
 package bg.webapp.shop.controller;
 
-import bg.webapp.shop.model.OrderEntity;
-import bg.webapp.shop.model.OrderItem;
-import bg.webapp.shop.model.Product;
-import bg.webapp.shop.model.User;
+import bg.webapp.shop.model.*;
 import bg.webapp.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +32,9 @@ public class WebShopController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    UserRightService userRightService;
 
 //    @Autowired
 //    GetOrderHistory getOrderHistory;
@@ -228,17 +229,27 @@ public class WebShopController {
                                       @RequestParam("phoneNumber") String phoneNumber,
                                       @RequestParam(name = "registeracc", required = false) boolean registerAcc,
                                       ModelAndView model,Principal principal){
-        String[] nameSplit = name.split("\\s+");
         User user = new User();
-        user.setUserFirstName(nameSplit[0]);
-        user.setUserLastName(nameSplit[1]);
-        user.setUserEmail(email);
-        user.setUserAddress(userAddress);
-        user.setUserPhone(phoneNumber);
-        user.setUserRight(0);
         String randomPassword = PasswordGenerator.generatePassword();
-        user.setUserPassword(passwordEncoder.encode(randomPassword));
-        userService.createUser(user);
+        LocalDate currentDate = LocalDate.now();
+        if (principal == null){
+            String[] nameSplit = name.split("\\s+");
+            user.setUserFirstName(nameSplit[0]);
+            user.setUserLastName(nameSplit[1]);
+            user.setUserEmail(email);
+            user.setUserAddress(userAddress);
+            user.setUserPhone(phoneNumber);
+            user.setUserRight(0);
+
+            user.setUserPassword(passwordEncoder.encode(randomPassword));
+            userService.createUser(user);
+
+            User createdUser = userService.getUserByEmail(email);
+            UserRight userRight = new UserRight(createdUser.getUserId(),0);
+            userRightService.createUserRight(userRight);
+        } else {
+            user = userService.getUserByEmail(email);
+        }
 
         OrderEntity order = new OrderEntity();
         order.setOrderStatus("Pending");
@@ -246,17 +257,21 @@ public class WebShopController {
 
 
         orderService.createOrder(order);
-        StringBuilder orderedItems = new StringBuilder();
+        StringBuilder orderItemsEmail = new StringBuilder();
         Integer orderQuantity;
         Map<OrderItem, Integer> cart = orderItemService.getCart();
+
         for (OrderItem item : cart.keySet()){
             item.setOrderID(order.getOrderID());
             orderItemService.createItem(item);
             orderQuantity = item.getProductQuantity();
-            orderedItems.append("\n"+item.toString()+": "+orderQuantity);
+            orderItemsEmail.append("\n"+item.toString()+": "+orderQuantity);
         }
-        orderedItems.append("\n Your password is : "+randomPassword);
-        emailService.sendSimpleMail(user.getUserEmail(),orderedItems);
+        if (registerAcc){
+            orderItemsEmail.append("\n Your password is : "+randomPassword);
+        }
+        orderItemsEmail.append("\n Date of the Order"+ currentDate);
+        emailService.sendSimpleMail(user.getUserEmail(),orderItemsEmail);
         cart.clear();
         List<Product> listProducts = productsService.listAllProducts();
         model.addObject("listProducts", listProducts);
@@ -281,6 +296,7 @@ public class WebShopController {
             Product product = productsService.findById(orderItem.getProductId());
             orderItem.setProductName(product.getProductName());
             orderItem.setProductDesc(product.getProductDesc());
+            orderItem.setProductPrice(product.getProductPrice());
         }
         model.addObject("orderhistory",history);
         model.addObject("principal",principal);

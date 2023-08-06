@@ -31,9 +31,10 @@
                     <th scope="col">#</th>
                     <th scope="col">Product Name</th>
                     <th scope="col">Product Description</th>
+                    <th scope="col">Product Quantity</th>
                     <th scope="col">Product Price</th>
-                    <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
+                    <th scope="col">Order Number</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,7 +42,11 @@
                     <td th:text="${iter.index + 1}"></td>
                     <td th:text="${instance.productName}"></td>
                     <td th:text="${instance.productDesc}"></td>
+                    <td th:text="${instance.productQuantity}"></td>
                     <td th:text="${instance.productPrice}"></td>
+                    <td th:text="${instance.productQuantity}*${instance.productPrice}"></td>
+
+                    <td th:text="${instance.orderID}"></td>
                 </tr>
                 </tbody>
             </table>
