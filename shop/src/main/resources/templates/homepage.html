@@ -31,7 +31,7 @@
     <h1>Product List</h1>
     <div th:if="${principal != null}">
         <h2>
-            <a th:href="@{/orderhistory}"> Order History</a>
+            <a th:href="@{/orderhistory(userId=${userId})} "> Order History</a>
         </h2>
     </div>
     <div class="row justify-content-center">

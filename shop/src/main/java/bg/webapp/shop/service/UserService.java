@@ -29,8 +29,8 @@ public class UserService {
         userRepo.delete(user);
     }
 
-    public void getUserByEmail(String email){
-        userRepo.findUserByEmail(email);
+    public User getUserByEmail(String email){
+        return userRepo.findUserByEmail(email);
     }
 
     public User getUserByFirstName(String name){

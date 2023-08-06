@@ -35,6 +35,9 @@ public class WebShopController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+//    @Autowired
+//    GetOrderHistory getOrderHistory;
+
 
     @RequestMapping(value = "/")
     public ModelAndView listProducts(ModelAndView model, Principal principal) {
@@ -48,9 +51,15 @@ public class WebShopController {
             model.addObject("cart", orderItemService.getCart());
         }
         if (principal != null){
-            User userByFirstName = userService.getUserByFirstName(principal.getName());
-            System.out.println(userByFirstName.getUserFirstName());
-
+//            User loggedUser = userService.getUserByFirstName(principal.getName());
+            User loggedUser = userService.getUserByEmail(principal.getName());
+            System.out.println(loggedUser.getUserEmail());
+            System.out.println(loggedUser.getUserId());
+            System.out.println(loggedUser.getUserFirstName());
+            model.addObject("userId", loggedUser.getUserId());
+//            model.addObject("welcomename", loggedUser.getUserFirstName());
+        } else{
+            System.out.println("not logged user");
         }
         return model;
     }
@@ -217,6 +226,7 @@ public class WebShopController {
                                       @RequestParam("name") String name,
                                       @RequestParam("userAddress") String userAddress,
                                       @RequestParam("phoneNumber") String phoneNumber,
+                                      @RequestParam(name = "registeracc", required = false) boolean registerAcc,
                                       ModelAndView model,Principal principal){
         String[] nameSplit = name.split("\\s+");
         User user = new User();
@@ -262,8 +272,8 @@ public class WebShopController {
     }
 
     @RequestMapping(value = "/orderhistory")
-    public ModelAndView orderHistory(ModelAndView model,Principal principal){
-        List<OrderItem> history = orderItemService.getHistory("36");
+    public ModelAndView orderHistory(@RequestParam("userId") String userId, ModelAndView model,Principal principal){
+        List<OrderItem> history = orderItemService.getHistory(userId);
         for (OrderItem orderItem : history) {
             System.out.println(orderItem.getProductId());
             System.out.println(orderItem.getOrderItemId());
@@ -273,6 +283,7 @@ public class WebShopController {
             orderItem.setProductDesc(product.getProductDesc());
         }
         model.addObject("orderhistory",history);
+        model.addObject("principal",principal);
         model.setViewName("orderhistory");
         return model;
     }
