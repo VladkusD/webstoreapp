@@ -5,7 +5,6 @@ import bg.webapp.shop.service.*;
 import bg.webapp.shop.util.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,14 +29,14 @@ public class WebShopController {
     @Autowired
     EmailService emailService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    PasswordGenerator passwordGenerator;
-
-    @Autowired
-    UserRightService userRightService;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
+//
+//    @Autowired
+//    PasswordGenerator passwordGenerator;
+//
+//    @Autowired
+//    UserRightService userRightService;
 
     @RequestMapping(value = "/")
     public ModelAndView listProducts(ModelAndView model, Principal principal) {
@@ -49,15 +48,8 @@ public class WebShopController {
             model.addObject("cart", orderItemService.getCart());
         }
         if (principal != null) {
-
             User loggedUser = userService.getRegisteredUserByEmail(principal.getName());
-            System.out.println(loggedUser.getUserEmail());
-            System.out.println(loggedUser.getUserId());
-            System.out.println(loggedUser.getUserFirstName());
             model.addObject("userId", loggedUser.getUserId());
-
-        } else {
-            System.out.println("not logged user");
         }
         return model;
     }

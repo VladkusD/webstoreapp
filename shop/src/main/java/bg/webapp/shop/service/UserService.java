@@ -4,10 +4,9 @@ import bg.webapp.shop.dao.UserJPARepository;
 import bg.webapp.shop.exceptions.CrudValidationException;
 import bg.webapp.shop.model.User;
 import bg.webapp.shop.model.UserRight;
-import bg.webapp.shop.util.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.context.annotation.Lazy;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +87,8 @@ public class UserService {
         }
         return user;
     }
+
+
 
 
 }
