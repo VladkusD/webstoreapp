@@ -5,6 +5,7 @@ import bg.webapp.shop.dao.ProductJPARepository;
 import bg.webapp.shop.model.OrderEntity;
 import bg.webapp.shop.model.OrderItem;
 import bg.webapp.shop.model.Product;
+import bg.webapp.shop.util.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;

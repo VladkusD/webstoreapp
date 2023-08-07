@@ -18,6 +18,7 @@ public class UserService {
 
     @Transactional(Transactional.TxType.REQUIRED)
     public void createUser (User user){
+
         userRepo.save(user);
     }
 
@@ -29,7 +30,7 @@ public class UserService {
         userRepo.delete(user);
     }
 
-    public User getUserByEmail(String email){
+    public User getRegisteredUserByEmail(String email){
         return userRepo.findUserByEmail(email);
     }
 
@@ -38,8 +39,6 @@ public class UserService {
     }
 
 
-//    public String generatePassword(){
-//        return
-//    }
+
 
 }

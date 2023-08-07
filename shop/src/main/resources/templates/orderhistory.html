@@ -44,7 +44,7 @@
                     <td th:text="${instance.productDesc}"></td>
                     <td th:text="${instance.productQuantity}"></td>
                     <td th:text="${instance.productPrice}"></td>
-                    <td th:text="${instance.productQuantity}*${instance.productPrice}"></td>
+                    <td th:text="${#numbers.formatDecimal(instance.productQuantity * instance.productPrice, 1, 2)}"></td>
 
                     <td th:text="${instance.orderID}"></td>
                 </tr>

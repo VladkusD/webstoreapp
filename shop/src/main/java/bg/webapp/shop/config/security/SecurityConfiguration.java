@@ -33,8 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         auth.jdbcAuthentication().dataSource(dataSource)
 
-  .usersByUsernameQuery("SELECT user_email, user_password, true FROM user WHERE user_email=?")
-    .authoritiesByUsernameQuery("SELECT ur.user_id, ur.system_role FROM user_right ur INNER JOIN user u ON ur.user_id WHERE u.user_email=?");
+  .usersByUsernameQuery("SELECT user_email, user_password, true FROM user WHERE user_email=? AND user_right=1")
+    .authoritiesByUsernameQuery("SELECT ur.user_id, ur.system_role FROM user_right ur INNER JOIN user u ON ur.user_id WHERE u.user_email=? AND ur.system_role=1");
 /*     .usersByUsernameQuery("SELECT user_first_name, user_password, true FROM user WHERE user_first_name=?")
     .authoritiesByUsernameQuery("SELECT ur.user_id, ur.system_role FROM user_right ur INNER JOIN user u ON ur.user_id WHERE u.user_first_name=?");*/
 

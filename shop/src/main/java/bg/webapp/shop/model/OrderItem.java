@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="order_item")
-public class OrderItem {
+public class OrderItem implements Comparable<OrderItem> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="order_item_id")
@@ -93,5 +93,12 @@ public class OrderItem {
     @Override
     public String toString(){
         return getProductName();
+    }
+    @Override
+    public int compareTo(OrderItem u) {
+        if (getOrderID() == null || u.getOrderID() == null) {
+            return 0;
+        }
+        return getOrderID().compareTo(u.getOrderID());
     }
 }

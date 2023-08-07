@@ -1,5 +1,6 @@
 package bg.webapp.shop.controller;
 
+import bg.webapp.shop.exceptions.CrudValidationException;
 import bg.webapp.shop.model.*;
 import bg.webapp.shop.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.*;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ public class WebShopController {
         }
         if (principal != null){
 //            User loggedUser = userService.getUserByFirstName(principal.getName());
-            User loggedUser = userService.getUserByEmail(principal.getName());
+            User loggedUser = userService.getRegisteredUserByEmail(principal.getName());
             System.out.println(loggedUser.getUserEmail());
             System.out.println(loggedUser.getUserId());
             System.out.println(loggedUser.getUserFirstName());
@@ -89,7 +91,7 @@ public class WebShopController {
         model.setViewName("homepage");
         return model;
     }
-// -------------------------------- Sus @PathVariable
+
     @RequestMapping(value = "/images/{productImage}", method = RequestMethod.GET)
     public @ResponseBody byte[] getImage(@PathVariable String productImage) throws IOException {
         InputStream in = new BufferedInputStream(new FileInputStream("D:\\java_projects\\" +
@@ -111,21 +113,6 @@ public class WebShopController {
 //    --------------------- int contactId = Integer.parseInt(request.getParameter("id")); <-Za RequestParam
 //    @RequestMapping(value = "/images/{productImage}", method = RequestMethod.GET)
 
-//    public @ResponseBody byte[] getImage(HttpServletRequest request) throws IOException {
-//        InputStream in = new BufferedInputStream(new FileInputStream("D:\\java_projects\\" +
-//                "springprojects\\webstoreapp\\"+request.getRequestURI()));
-//
-//        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-//
-//        int nRead;
-//        byte[] data = new byte[16384];
-//
-//        while ((nRead = in.read(data, 0, data.length)) != -1) {
-//            buffer.write(data, 0, nRead);
-//        }
-//
-//        return buffer.toByteArray();
-//    }
 
     @RequestMapping(value = "/addProductToCart/{productId}", method = RequestMethod.POST)
     public ModelAndView addProductToCart(@PathVariable Integer productId,
@@ -217,7 +204,6 @@ public class WebShopController {
 
         model.addObject("principal",principal);
         model.setViewName("checkout");
-        //emailService.sendSimpleMail();
         return model;
     }
     // @RequestParam quantity <- moga da prihvana quantity kato requestparam ako go definiram
@@ -234,21 +220,32 @@ public class WebShopController {
         LocalDate currentDate = LocalDate.now();
         if (principal == null){
             String[] nameSplit = name.split("\\s+");
+            if (nameSplit.length==1){
+                    throw new CrudValidationException("Enter two names");
+            }
             user.setUserFirstName(nameSplit[0]);
             user.setUserLastName(nameSplit[1]);
             user.setUserEmail(email);
             user.setUserAddress(userAddress);
             user.setUserPhone(phoneNumber);
-            user.setUserRight(0);
-
+            if(registerAcc){
+                user.setUserRight(1);
+            }else{
+                user.setUserRight(0);
+            }
             user.setUserPassword(passwordEncoder.encode(randomPassword));
             userService.createUser(user);
 
-            User createdUser = userService.getUserByEmail(email);
-            UserRight userRight = new UserRight(createdUser.getUserId(),0);
-            userRightService.createUserRight(userRight);
+            User createdUser = userService.getRegisteredUserByEmail(email);
+            if (registerAcc){
+                UserRight userRight = new UserRight(createdUser.getUserId(),1);
+                userRightService.createUserRight(userRight);
+            }else{
+                UserRight userRight = new UserRight(createdUser.getUserId(),0);
+                userRightService.createUserRight(userRight);
+            }
         } else {
-            user = userService.getUserByEmail(email);
+            user = userService.getRegisteredUserByEmail(email);
         }
 
         OrderEntity order = new OrderEntity();
@@ -259,17 +256,20 @@ public class WebShopController {
         orderService.createOrder(order);
         StringBuilder orderItemsEmail = new StringBuilder();
         Integer orderQuantity;
+        double orderTotal=0.0;
         Map<OrderItem, Integer> cart = orderItemService.getCart();
 
         for (OrderItem item : cart.keySet()){
             item.setOrderID(order.getOrderID());
             orderItemService.createItem(item);
             orderQuantity = item.getProductQuantity();
+            orderTotal+=orderQuantity*item.getProductPrice();
             orderItemsEmail.append("\n"+item.toString()+": "+orderQuantity);
         }
         if (registerAcc){
             orderItemsEmail.append("\n Your password is : "+randomPassword);
         }
+        orderItemsEmail.append("\n Total amount of the order: "+orderTotal);
         orderItemsEmail.append("\n Date of the Order"+ currentDate);
         emailService.sendSimpleMail(user.getUserEmail(),orderItemsEmail);
         cart.clear();
@@ -289,6 +289,7 @@ public class WebShopController {
     @RequestMapping(value = "/orderhistory")
     public ModelAndView orderHistory(@RequestParam("userId") String userId, ModelAndView model,Principal principal){
         List<OrderItem> history = orderItemService.getHistory(userId);
+        Collections.sort(history);
         for (OrderItem orderItem : history) {
             System.out.println(orderItem.getProductId());
             System.out.println(orderItem.getOrderItemId());
