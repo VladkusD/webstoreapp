@@ -93,7 +93,6 @@
                         <a th:href="@{/cart/increment/{productId}(productId=${instance.key.productId})}"
                            class="btn btn-primary">+</a>
                     </td>
-<!--                    <td th:text="${(instance.key.productPrice * instance.value)}"></td>-->
                     <td th:text="${#numbers.formatDecimal(instance.key.productPrice * instance.value, 1, 2)}"></td>
                 </tr>
                 </tbody>

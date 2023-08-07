@@ -40,14 +40,6 @@ public class ProductsService {
         return productRepo.findById(productId).orElse(null);
     }
 
-//    public Product findById(int productId){
-//        return productRepo.getReferenceById(productId);
-//    }
-
-
-    //    public List<Product> findByProductName(String condition) {
-//        return productRepo.findAll();
-//    }
     public List<Product> findAll() {
         return productRepo.findAll();
     }

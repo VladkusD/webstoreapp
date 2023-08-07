@@ -1,9 +1,13 @@
-package bg.webapp.shop.service;
+package bg.webapp.shop.util;
+
+
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Component
 public class PasswordGenerator {
     public static String generatePassword() {
         StringBuilder password = new StringBuilder();
