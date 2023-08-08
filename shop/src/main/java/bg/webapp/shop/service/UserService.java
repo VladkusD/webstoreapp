@@ -67,6 +67,7 @@ public class UserService {
             user.setUserAddress(userAddress);
             user.setUserPhone(phoneNumber);
             if (registerAcc) {
+                checkIfUserIsAlreadyRegistered(user.getUserEmail());
                 user.setUserRight(1);
             } else {
                 user.setUserRight(0);
@@ -86,6 +87,12 @@ public class UserService {
             user = getRegisteredUserByEmail(email);
         }
         return user;
+    }
+
+    public void checkIfUserIsAlreadyRegistered(String email){
+        if (getRegisteredUserByEmail(email)!=null){
+            throw new CrudValidationException("User already registered");
+        }
     }
 
 
